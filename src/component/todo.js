@@ -2,13 +2,9 @@ import React, {useState, useEffect} from 'react'
 import logo from "../logo.svg";
 import "../App.css"
 
-
-// to get the data from LS
-
+//get locally saved items
 const getLocalItmes = () => {
     let list = localStorage.getItem('lists');
-    console.log(list);
-
     if (list) {
         return JSON.parse(localStorage.getItem('lists'));
     } else {
@@ -16,6 +12,7 @@ const getLocalItmes = () => {
     }
 }
 
+//main function
 const Todo = () => {
 
     const [inputData, setInputData] = useState('');
@@ -36,9 +33,7 @@ const Todo = () => {
                 })
             )
                  setToggleSubmit(true);
-
                  setInputData('');
-
                  setIsEditItem(null);
         } else {
             const allInputData = { id: new Date().getTime().toString(), name:inputData }
@@ -46,38 +41,34 @@ const Todo = () => {
             setInputData('')
         }
     }
-
+    const KeyPress = ( event ) => {
+        if( event.key == 'Enter'){
+           addItem();
+        }
+    }
     
     // delete the items
     const deleteItem = (index) => {
         const updateditems = items.filter((elem) => {
             return index !== elem.id;
         });
-
         setItems(updateditems);
     }
-
     const editItem = (id) => {
         let newEditItem = items.find((elem) => {
             return elem.id === id
         });
-        console.log(newEditItem);
-
         setToggleSubmit(false);
-
         setInputData(newEditItem.name);
-
         setIsEditItem(id);
-
     }
     
-
     // remove all 
     const removeAll = () => {
          setItems([]);
     }
 
-    // add data to localStorage
+    // localStorage
     useEffect(() => {
        localStorage.setItem('lists', JSON.stringify(items))
     }, [items]);
@@ -88,23 +79,20 @@ const Todo = () => {
                 <div className="child-div">
                     <figure>
                         <img src={logo} alt="todologo" />
-                        <figcaption>Add Your List Here ✌</figcaption>
+                        <figcaption>Add Your Todo List Here ✌</figcaption>
                     </figure>
-
                     <div className="addItems">
                         <input type="text" placeholder="✍ Add Items..."
                            value={inputData} 
                            onChange={(e) => setInputData(e.target.value) }
+                           onKeyPress={KeyPress}
                         />
                         {
                             toggleSubmit ? <i className="fa fa-plus add-btn" title="Add Item" onClick={addItem}></i> :
                                  <i className="far fa-edit add-btn" title="Update Item" onClick={addItem}></i>
                         }
-                       
                     </div>
-
                     <div className="showItems">
-                        
                         {
                             items.map((elem) => {
                                 return (
@@ -117,12 +105,8 @@ const Todo = () => {
                                   </div>
                                 )
                             })
-
                         }
-                       
                     </div>
-                
-                    {/* clear all button  */}
                     <div className="showItems">
                         <button className="btn effect04" data-sm-link-text="Remove All" onClick={removeAll}><span> CHECK LIST </span> </button>
                     </div>
@@ -131,5 +115,7 @@ const Todo = () => {
         </>
     )
 }
+
+
 
 export default Todo
